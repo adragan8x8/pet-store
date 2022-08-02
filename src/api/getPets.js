@@ -1,19 +1,19 @@
-export const asyncFetchDataByID = async (url) => {
+export const getPets = async (offset, pageSize) => {
   const fetches = [];
 
   const singleFetch = async (index) => {
-    const response = await fetch(url + index);
+    const response = await fetch(`https://petstore.swagger.io/v2/pet/${index}`);
     return response.json();
   };
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < offset + pageSize; i++) {
     fetches.push(singleFetch(i));
   }
 
-  return {
-    pets: [],
-    hasMoreContent: true,
-  };
+  const pets = await Promise.all(fetches);
 
-  return Promise.all(fetches);
+  return {
+    data: pets.slice(-pageSize),
+    hasMoreContent: offset + pageSize < 100,
+  };
 };

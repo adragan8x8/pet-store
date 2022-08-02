@@ -1,25 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { PetsTable } from "./styled/PetsTable.styled";
-import { TableHeader } from "./styled/TableHeader.styled";
-import { TableRow } from "./styled/TableRow.styled";
-import { TableData } from "./styled/TableData.styled";
-import { fetchDataByID } from "./service/fetchDataByID";
+import { PetsTable } from "../styled/PetsTable.styled";
+import { TableHeader } from "../styled/TableHeader.styled";
+import { TableRow } from "../styled/TableRow.styled";
+import { TableData } from "../styled/TableData.styled";
+
+import { getPets } from "../api/getPets";
+
+import { useDispatch, useSelector } from "react-redux";
+import { add } from "../reducers/petsSlice";
+import { usePaginated } from "../customHooks/usePaginated";
+import { PaginateButtons } from "../styled/PaginateButtons.styled";
+import { PaginateButton } from "../styled/PaginateButton.styled";
+import { Selector } from "../styled/Selector.styled";
+import { useEffect, useState } from "react";
 
 export default function Pets() {
-  const [pets, setPets] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const dispatch = useDispatch();
+  const pets = useSelector((state) => state.pets);
+  const { next, prev, hasMoreContent, data, offset, setOffset } = usePaginated(
+    getPets,
+    pageSize
+  );
 
   useEffect(() => {
-    fetchDataByID("https://petstore.swagger.io/v2/pet/").then((fetchedData) => {
-      setPets(fetchedData.filter((data) => data));
-    });
-  }, []);
+    dispatch(add(data));
+  }, [data, dispatch]);
 
-  if (pets === []) {
-    console.log("ok");
-    return <p>"Loading..."</p>;
+  if (!pets) {
+    return <p>Loading...</p>;
   } else {
     return (
       <>
+        <Selector
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(parseInt(e.target.value));
+            setOffset(0);
+          }}
+          name="page-size"
+        >
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </Selector>
         <PetsTable>
           <thead>
             <TableRow>
@@ -31,7 +54,7 @@ export default function Pets() {
           </thead>
           <tbody>
             {pets.map((pet, index) => (
-              <TableRow highlighted={index % 2} key={pet.id}>
+              <TableRow highlighted={index % 2} key={index}>
                 <TableData>{pet.id}</TableData>
                 <TableData>
                   {pet.category ? pet.category.name : "No category"}
@@ -42,6 +65,34 @@ export default function Pets() {
             ))}
           </tbody>
         </PetsTable>
+        <PaginateButtons>
+          <PaginateButton disabled={offset === 0} onClick={prev}>
+            <svg
+              width={"40px"}
+              clipRule="evenodd"
+              fillRule="evenodd"
+              strokeLinejoin="round"
+              strokeMiterlimit="2"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="m13.789 7.155c.141-.108.3-.157.456-.157.389 0 .755.306.755.749v8.501c0 .445-.367.75-.755.75-.157 0-.316-.05-.457-.159-1.554-1.203-4.199-3.252-5.498-4.258-.184-.142-.29-.36-.29-.592 0-.23.107-.449.291-.591 1.299-1.002 3.945-3.044 5.498-4.243z" />
+            </svg>
+          </PaginateButton>
+          <PaginateButton disabled={!hasMoreContent} onClick={next}>
+            <svg
+              width={"40px"}
+              clipRule="evenodd"
+              fillRule="evenodd"
+              strokeLinejoin="round"
+              strokeMiterlimit="2"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="m10.211 7.155c-.141-.108-.3-.157-.456-.157-.389 0-.755.306-.755.749v8.501c0 .445.367.75.755.75.157 0 .316-.05.457-.159 1.554-1.203 4.199-3.252 5.498-4.258.184-.142.29-.36.29-.592 0-.23-.107-.449-.291-.591-1.299-1.002-3.945-3.044-5.498-4.243z" />
+            </svg>
+          </PaginateButton>
+        </PaginateButtons>
       </>
     );
   }
