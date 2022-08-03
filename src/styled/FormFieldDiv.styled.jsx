@@ -25,4 +25,9 @@ export const FormFieldDiv = styled.div`
     border-radius: 8px;
     border: 2px solid #333;
   }
+
+  span {
+    color: darkred;
+    margin: 4px auto;
+  }
 `;

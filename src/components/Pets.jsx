@@ -12,7 +12,8 @@ import { PaginateButtons } from "../styled/PaginateButtons.styled";
 import { PaginateButton } from "../styled/PaginateButton.styled";
 import { Selector } from "../styled/Selector.styled";
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+
+import TableEdit from "./TableEdit";
 
 export default function Pets() {
   const [pageSize, setPageSize] = useState(10);
@@ -51,25 +52,25 @@ export default function Pets() {
               <TableHeader>Category</TableHeader>
               <TableHeader>Name</TableHeader>
               <TableHeader>Status</TableHeader>
+              <TableHeader>Edit</TableHeader>
             </TableRow>
           </thead>
           <tbody>
             {pets.map((pet, index) => {
               return (
                 <TableRow highlighted={index % 2} key={index}>
-                  <TableData>
-                    <Link
-                      style={{ textDecoration: "none", color: "#333" }}
-                      to={`/pets/${index}`}
-                    >
-                      {pet.id ? pet.id : offset + index}
-                    </Link>
-                  </TableData>
+                  <TableData>{pet.id ? pet.id : offset + index}</TableData>
                   <TableData>
                     {pet.category ? pet.category.name : "No category"}
                   </TableData>
                   <TableData>{pet.name ? pet.name : "No name"}</TableData>
                   <TableData>{pet.status}</TableData>
+                  <TableData>
+                    <TableEdit
+                      icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSAyMWgtNXYtMmg1djJ6bTMuNDI0LTUuNzE4bDQuNDAyIDQuMzk5LTUuODI2IDEuMzE5IDEuNDI0LTUuNzE4em0xNS41NzYtNi43NDhsLTkuNjg5IDkuODA0LTQuNTM2LTQuNTM2IDkuNjg5LTkuODAyIDQuNTM2IDQuNTM0eiIvPjwvc3ZnPg=="
+                      link={`/pets/${index}`}
+                    />
+                  </TableData>
                 </TableRow>
               );
             })}
@@ -103,7 +104,6 @@ export default function Pets() {
             </svg>
           </PaginateButton>
         </PaginateButtons>
-        <Outlet></Outlet>
       </>
     );
   }

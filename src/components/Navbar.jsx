@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import App from "../App";
-import Pets from "./Pets";
-
 import { NavContainer } from "../styled/NavContainer.styled";
 import { NavItem } from "../styled/NavItem.styled";
 
@@ -15,6 +12,9 @@ export default function Navbar() {
       </Link>
       <Link to="/pets">
         <NavItem>Pets</NavItem>
+      </Link>
+      <Link to="/pets/add">
+        <NavItem>Add</NavItem>
       </Link>
     </NavContainer>
   );

@@ -10,4 +10,8 @@ export const SubmitButton = styled.button`
   border: none;
   border-radius: 8px;
   margin: 16px auto;
+
+  &:disabled {
+    background-color: grey;
+  }
 `;

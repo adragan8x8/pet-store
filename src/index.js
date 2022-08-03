@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
-import App from "./App";
 import Navbar from "./components/Navbar";
 import Pet from "./components/Pet";
 import Pets from "./components/Pets";
@@ -24,11 +23,12 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Provider store={store}>
-      <Navbar></Navbar>
+      <Navbar />
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="pets" element={<Pets />} />
-        <Route path="pets/:petID" element={<Pet />} />
+        <Route path="pets/:petID" element={<Pet type="update" />} />
+        <Route path="pets/add" element={<Pet type="add" />} />
       </Routes>
     </Provider>
   </BrowserRouter>
