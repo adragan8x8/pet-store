@@ -12,6 +12,7 @@ import { PaginateButtons } from "../styled/PaginateButtons.styled";
 import { PaginateButton } from "../styled/PaginateButton.styled";
 import { Selector } from "../styled/Selector.styled";
 import { useEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
 
 export default function Pets() {
   const [pageSize, setPageSize] = useState(10);
@@ -53,16 +54,25 @@ export default function Pets() {
             </TableRow>
           </thead>
           <tbody>
-            {pets.map((pet, index) => (
-              <TableRow highlighted={index % 2} key={index}>
-                <TableData>{pet.id}</TableData>
-                <TableData>
-                  {pet.category ? pet.category.name : "No category"}
-                </TableData>
-                <TableData>{pet.name ? pet.name : "No name"}</TableData>
-                <TableData>{pet.status}</TableData>
-              </TableRow>
-            ))}
+            {pets.map((pet, index) => {
+              return (
+                <TableRow highlighted={index % 2} key={index}>
+                  <TableData>
+                    <Link
+                      style={{ textDecoration: "none", color: "#333" }}
+                      to={`/pets/${index}`}
+                    >
+                      {pet.id ? pet.id : offset + index}
+                    </Link>
+                  </TableData>
+                  <TableData>
+                    {pet.category ? pet.category.name : "No category"}
+                  </TableData>
+                  <TableData>{pet.name ? pet.name : "No name"}</TableData>
+                  <TableData>{pet.status}</TableData>
+                </TableRow>
+              );
+            })}
           </tbody>
         </PetsTable>
         <PaginateButtons>
@@ -93,6 +103,7 @@ export default function Pets() {
             </svg>
           </PaginateButton>
         </PaginateButtons>
+        <Outlet></Outlet>
       </>
     );
   }
