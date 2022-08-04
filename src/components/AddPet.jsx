@@ -1,26 +1,29 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PetForm from "./PetForm";
 import { FORM_ERROR } from "final-form";
 import { addPet } from "../service/petsAPI";
 import { useNavigate } from "react-router-dom";
 
 export default function EditPet() {
-  const initialValues = {
-    id: 0,
-    category: {
+  const initialValues = useMemo(
+    () => ({
       id: 0,
-      name: "",
-    },
-    name: "",
-    photoUrls: ["string"],
-    tags: [
-      {
+      category: {
         id: 0,
-        name: "string",
+        name: "",
       },
-    ],
-    status: "available",
-  };
+      name: "",
+      photoUrls: ["string"],
+      tags: [
+        {
+          id: 0,
+          name: "string",
+        },
+      ],
+      status: "available",
+    }),
+    []
+  );
 
   const navigate = useNavigate();
 
