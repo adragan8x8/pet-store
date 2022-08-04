@@ -14,14 +14,20 @@ import { Selector } from "../styled/Selector.styled";
 import { useEffect, useState } from "react";
 
 import TableEdit from "./TableEdit";
+import DeletePet from "./DeletePet";
 
 export default function Pets() {
+  const [showModal, setShowModal] = useState(false);
+  const [changeData, setChangeData] = useState(false);
+  const [petIndex, setPetIndex] = useState(null);
   const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const pets = useSelector((state) => state.pets);
+
   const { next, prev, hasMoreContent, data, offset, setOffset } = usePaginated(
     getPets,
-    pageSize
+    pageSize,
+    changeData
   );
 
   useEffect(() => {
@@ -33,6 +39,14 @@ export default function Pets() {
   } else {
     return (
       <>
+        {showModal && (
+          <DeletePet
+            showModal={showModal}
+            setShowModal={setShowModal}
+            index={petIndex}
+            setChangeData={setChangeData}
+          />
+        )}
         <Selector
           value={pageSize}
           onChange={(e) => {
@@ -53,6 +67,7 @@ export default function Pets() {
               <TableHeader>Name</TableHeader>
               <TableHeader>Status</TableHeader>
               <TableHeader>Edit</TableHeader>
+              <TableHeader>Delete</TableHeader>
             </TableRow>
           </thead>
           <tbody>
@@ -69,6 +84,17 @@ export default function Pets() {
                     <TableEdit
                       icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSAyMWgtNXYtMmg1djJ6bTMuNDI0LTUuNzE4bDQuNDAyIDQuMzk5LTUuODI2IDEuMzE5IDEuNDI0LTUuNzE4em0xNS41NzYtNi43NDhsLTkuNjg5IDkuODA0LTQuNTM2LTQuNTM2IDkuNjg5LTkuODAyIDQuNTM2IDQuNTM0eiIvPjwvc3ZnPg=="
                       link={`/pets/${pet.id ? pet.id : offset + index}`}
+                    />
+                  </TableData>
+                  <TableData>
+                    <img
+                      width={"20px"}
+                      src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMjAgMjBoLTE1LjI1Yy0uNDE0IDAtLjc1LjMzNi0uNzUuNzVzLjMzNi43NS43NS43NWgxNS43NWMuNTMgMCAxLS40NyAxLTF2LTE1Ljc1YzAtLjQxNC0uMzM2LS43NS0uNzUtLjc1cy0uNzUuMzM2LS43NS43NXptLTEtMTdjMC0uNDc4LS4zNzktMS0xLTFoLTE1Yy0uNjIgMC0xIC41MTktMSAxdjE1YzAgLjYyMS41MiAxIDEgMWgxNWMuNDc4IDAgMS0uMzc5IDEtMXptLTguNTAzIDYuNDM3IDIuMjE5LTIuMjJjLjE0Ni0uMTQ2LjMzOC0uMjE5LjUzLS4yMTkuNDA0IDAgLjc1MS4zMjUuNzUxLjc1IDAgLjE5My0uMDczLjM4NC0uMjE5LjUzMWwtMi4yMiAyLjIyIDIuMjIyIDIuMjIyYy4xNDcuMTQ3LjIyLjMzOS4yMi41MyAwIC40MjctLjM0OS43NTEtLjc1Ljc1MS0uMTkyIDAtLjM4NS0uMDczLS41MzEtLjIxOWwtMi4yMjItMi4yMjMtMi4yMjMgMi4yMjNjLS4xNDYuMTQ2LS4zMzguMjE5LS41My4yMTktLjQwMSAwLS43NTEtLjMyNC0uNzUxLS43NTEgMC0uMTkxLjA3My0uMzgzLjIyLS41M2wyLjIyMi0yLjIyMi0yLjIxOS0yLjIyYy0uMTQ2LS4xNDctLjIxOS0uMzM4LS4yMTktLjUzMSAwLS40MjUuMzQ2LS43NS43NS0uNzUuMTkyIDAgLjM4NC4wNzMuNTMuMjE5eiIgZmlsbC1ydWxlPSJub256ZXJvIi8+PC9zdmc+"
+                      onClick={() => {
+                        setShowModal(true);
+                        setPetIndex(pet.id ? pet.id : offset + index);
+                      }}
+                      alt="delete"
                     />
                   </TableData>
                 </TableRow>
