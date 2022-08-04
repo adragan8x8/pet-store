@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PetForm from "./PetForm";
 import { FORM_ERROR } from "final-form";
-import { addPet } from "../petsApi/addPet";
+import { addPet } from "../service/petsAPI";
+import { useNavigate } from "react-router-dom";
 
 export default function EditPet() {
-  const [initialValues, setInitialValues] = useState({});
-
-  useEffect(() => {
-    const data = {
+  const initialValues = {
+    id: 0,
+    category: {
       id: 0,
-      category: {
-        id: 0,
-        name: "",
-      },
       name: "",
-      photoUrls: ["string"],
-      tags: [
-        {
-          id: 0,
-          name: "string",
-        },
-      ],
-      status: "available",
-    };
-    setInitialValues(data);
-  }, []);
+    },
+    name: "",
+    photoUrls: ["string"],
+    tags: [
+      {
+        id: 0,
+        name: "string",
+      },
+    ],
+    status: "available",
+  };
+
+  const navigate = useNavigate();
 
   function onAddSubmit(values) {
     const newData = {
@@ -41,6 +39,9 @@ export default function EditPet() {
       const response = await addPet(newData);
       if (!response)
         return { [FORM_ERROR]: "Something happened! Please try again!" };
+      else {
+        navigate(`/pets/${response.id}`);
+      }
     };
 
     return callAddPet();

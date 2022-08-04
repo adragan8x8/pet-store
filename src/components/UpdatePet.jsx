@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getPet } from "../petsApi/getPet";
+import { getPet, updatePet } from "../service/petsAPI";
 import PetForm from "./PetForm";
-import { updatePet } from "../petsApi/updatePet";
 import { FORM_ERROR } from "final-form";
 
 export default function UpdatePet() {

@@ -3,7 +3,7 @@ import { TableHeader } from "../styled/TableHeader.styled";
 import { TableRow } from "../styled/TableRow.styled";
 import { TableData } from "../styled/TableData.styled";
 
-import { getPets } from "../petsApi/getPets";
+import { getPets } from "../service/petsAPI";
 
 import { useDispatch, useSelector } from "react-redux";
 import { add } from "../reducers/petsSlice";
