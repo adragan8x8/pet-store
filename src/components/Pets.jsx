@@ -3,7 +3,7 @@ import { TableHeader } from "../styled/TableHeader.styled";
 import { TableRow } from "../styled/TableRow.styled";
 import { TableData } from "../styled/TableData.styled";
 
-import { getPets } from "../api/getPets";
+import { getPets } from "../service/petsAPI";
 
 import { useDispatch, useSelector } from "react-redux";
 import { add } from "../reducers/petsSlice";
@@ -12,6 +12,8 @@ import { PaginateButtons } from "../styled/PaginateButtons.styled";
 import { PaginateButton } from "../styled/PaginateButton.styled";
 import { Selector } from "../styled/Selector.styled";
 import { useEffect, useState } from "react";
+
+import TableEdit from "./TableEdit";
 
 export default function Pets() {
   const [pageSize, setPageSize] = useState(10);
@@ -50,19 +52,28 @@ export default function Pets() {
               <TableHeader>Category</TableHeader>
               <TableHeader>Name</TableHeader>
               <TableHeader>Status</TableHeader>
+              <TableHeader>Edit</TableHeader>
             </TableRow>
           </thead>
           <tbody>
-            {pets.map((pet, index) => (
-              <TableRow highlighted={index % 2} key={index}>
-                <TableData>{pet.id}</TableData>
-                <TableData>
-                  {pet.category ? pet.category.name : "No category"}
-                </TableData>
-                <TableData>{pet.name ? pet.name : "No name"}</TableData>
-                <TableData>{pet.status}</TableData>
-              </TableRow>
-            ))}
+            {pets.map((pet, index) => {
+              return (
+                <TableRow highlighted={index % 2} key={index}>
+                  <TableData>{pet.id ? pet.id : offset + index}</TableData>
+                  <TableData>
+                    {pet.category ? pet.category.name : "No category"}
+                  </TableData>
+                  <TableData>{pet.name ? pet.name : "No name"}</TableData>
+                  <TableData>{pet.status}</TableData>
+                  <TableData>
+                    <TableEdit
+                      icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSAyMWgtNXYtMmg1djJ6bTMuNDI0LTUuNzE4bDQuNDAyIDQuMzk5LTUuODI2IDEuMzE5IDEuNDI0LTUuNzE4em0xNS41NzYtNi43NDhsLTkuNjg5IDkuODA0LTQuNTM2LTQuNTM2IDkuNjg5LTkuODAyIDQuNTM2IDQuNTM0eiIvPjwvc3ZnPg=="
+                      link={`/pets/${pet.id ? pet.id : offset + index}`}
+                    />
+                  </TableData>
+                </TableRow>
+              );
+            })}
           </tbody>
         </PetsTable>
         <PaginateButtons>
