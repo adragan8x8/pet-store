@@ -3,7 +3,7 @@ import { TableHeader } from "../styled/TableHeader.styled";
 import { TableRow } from "../styled/TableRow.styled";
 import { TableData } from "../styled/TableData.styled";
 
-import { getPets } from "../api/getPets";
+import { getPets } from "../petsApi/getPets";
 
 import { useDispatch, useSelector } from "react-redux";
 import { add } from "../reducers/petsSlice";
@@ -68,7 +68,7 @@ export default function Pets() {
                   <TableData>
                     <TableEdit
                       icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSAyMWgtNXYtMmg1djJ6bTMuNDI0LTUuNzE4bDQuNDAyIDQuMzk5LTUuODI2IDEuMzE5IDEuNDI0LTUuNzE4em0xNS41NzYtNi43NDhsLTkuNjg5IDkuODA0LTQuNTM2LTQuNTM2IDkuNjg5LTkuODAyIDQuNTM2IDQuNTM0eiIvPjwvc3ZnPg=="
-                      link={`/pets/${index}`}
+                      link={`/pets/${pet.id ? pet.id : offset + index}`}
                     />
                   </TableData>
                 </TableRow>

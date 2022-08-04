@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import Navbar from "./components/Navbar";
-import Pet from "./components/Pet";
+import UpdatePet from "./components/UpdatePet";
+import AddPet from "./components/AddPet";
 import Pets from "./components/Pets";
 import Home from "./components/Home";
 
@@ -27,8 +28,8 @@ root.render(
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="pets" element={<Pets />} />
-        <Route path="pets/:petID" element={<Pet type="update" />} />
-        <Route path="pets/add" element={<Pet type="add" />} />
+        <Route path="pets/:petID" element={<UpdatePet />} />
+        <Route path="pets/add" element={<AddPet />} />
       </Routes>
     </Provider>
   </BrowserRouter>
