@@ -11,23 +11,22 @@ import { usePaginated } from "../customHooks/usePaginated";
 import { PaginateButtons } from "../styled/PaginateButtons.styled";
 import { PaginateButton } from "../styled/PaginateButton.styled";
 import { Selector } from "../styled/Selector.styled";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import TableEdit from "./TableEdit";
 import DeletePet from "./DeletePet";
 
 export default function Pets() {
   const [showModal, setShowModal] = useState(false);
-  const [changeData, setChangeData] = useState(false);
   const [petIndex, setPetIndex] = useState(null);
   const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const pets = useSelector((state) => state.pets);
+  const petGetter = useRef(getPets);
 
   const { next, prev, hasMoreContent, data, offset, setOffset } = usePaginated(
-    getPets,
-    pageSize,
-    changeData
+    petGetter.current,
+    pageSize
   );
 
   useEffect(() => {
@@ -44,7 +43,9 @@ export default function Pets() {
             showModal={showModal}
             setShowModal={setShowModal}
             index={petIndex}
-            setChangeData={setChangeData}
+            onDelete={() => {
+              petGetter.current = (...params) => getPets(...params);
+            }}
           />
         )}
         <Selector

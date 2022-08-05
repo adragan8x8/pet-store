@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const usePaginated = (getFunction, pageSize, changeData) => {
+export const usePaginated = (getFunction, pageSize) => {
   const [offset, setOffset] = useState(0);
   const [hasMoreContent, setHasMoreContent] = useState(true);
   const [data, setData] = useState([]);
@@ -14,13 +14,17 @@ export const usePaginated = (getFunction, pageSize, changeData) => {
   };
 
   useEffect(() => {
+    setOffset(0);
+  }, [getFunction]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const { data, hasMoreContent } = await getFunction(offset, pageSize);
       setHasMoreContent(hasMoreContent);
       setData(data);
     };
     fetchData();
-  }, [getFunction, offset, pageSize, changeData]);
+  }, [getFunction, offset, pageSize]);
 
   return { hasMoreContent, data, next, prev, offset, setOffset };
 };

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Overlay } from "../styled/Overlay.styled";
 import { InnerModal } from "../styled/InnerModal";
 
-export default function DeleteModal({ children, setShowModal }) {
+export default function Modal({ children, setShowModal }) {
   return ReactDOM.createPortal(
     <>
       <Overlay onClick={() => setShowModal(false)}>
