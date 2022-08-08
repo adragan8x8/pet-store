@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SubmitButtonSecondary = styled.button`
+export const SecondaryButton = styled.button`
   font-size: 14px;
   font-weight: bold;
   background-color: #fff;

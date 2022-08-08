@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { deletePet } from "../service/petsAPI";
 import Modal from "./Modal";
-import { SubmitButton } from "../styled/SubmitButton.styled";
-import { SubmitButtonSecondary } from "../styled/SubmitButtonSecondary.styled";
+import { PrimaryButton } from "../styled/PrimaryButton.styled";
+import { SecondaryButton } from "../styled/SecondaryButton.styled";
 
 export default function DeletePet({
   index,
@@ -29,10 +29,10 @@ export default function DeletePet({
           If you press that delete button, you won't be able to get this pet
           back again!
         </p>
-        <SubmitButton onClick={() => handleDelete()}>delete</SubmitButton>
-        <SubmitButtonSecondary onClick={() => setShowModal(false)}>
+        <PrimaryButton onClick={() => handleDelete()}>delete</PrimaryButton>
+        <SecondaryButton onClick={() => setShowModal(false)}>
           cancel
-        </SubmitButtonSecondary>
+        </SecondaryButton>
       </Modal>
     );
 }

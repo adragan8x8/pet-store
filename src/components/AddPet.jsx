@@ -1,10 +1,22 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import PetForm from "./PetForm";
 import { FORM_ERROR } from "final-form";
 import { addPet } from "../service/petsAPI";
 import { useNavigate } from "react-router-dom";
+import Modal from "./Modal";
+import { PrimaryButton } from "../styled/PrimaryButton.styled";
+import { SecondaryButton } from "../styled/SecondaryButton.styled";
 
-export default function EditPet() {
+export default function AddPet() {
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.pathname);
+    window.addEventListener("popstate", () => setShowModal(true));
+    return () =>
+      window.removeEventListener("popstate", () => setShowModal(true));
+  }, []);
+
   const initialValues = useMemo(
     () => ({
       id: 0,
@@ -51,10 +63,34 @@ export default function EditPet() {
   }
 
   return (
-    <PetForm
-      initialValues={initialValues}
-      onSubmit={onAddSubmit}
-      type="add"
-    ></PetForm>
+    <>
+      {showModal && (
+        <Modal setShowModal={setShowModal}>
+          <h1>Are you sure?</h1>
+          <p>If you go back now, this pet won't be added!</p>
+          <PrimaryButton onClick={() => navigate("/pets")}>
+            Yes! Take me back!
+          </PrimaryButton>
+          <SecondaryButton
+            onClick={() => {
+              setShowModal(false);
+              window.history.pushState(
+                null,
+                document.title,
+                window.location.pathname
+              );
+            }}
+          >
+            No! I will stay!
+          </SecondaryButton>
+        </Modal>
+      )}
+      <PetForm
+        initialValues={initialValues}
+        onSubmit={onAddSubmit}
+        type="add"
+        setShowModal={setShowModal}
+      ></PetForm>
+    </>
   );
 }

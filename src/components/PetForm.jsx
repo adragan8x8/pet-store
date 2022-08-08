@@ -1,10 +1,16 @@
 import React from "react";
 import { Field, Form } from "react-final-form";
 import { FormFieldDiv } from "../styled/FormFieldDiv.styled";
-import { SubmitButton } from "../styled/SubmitButton.styled";
+import { PrimaryButton } from "../styled/PrimaryButton.styled";
 import FormInput from "./FormInput";
+import { SecondaryButton } from "../styled/SecondaryButton.styled";
 
-export default function PetForm({ initialValues, onSubmit, type }) {
+export default function PetForm({
+  initialValues,
+  onSubmit,
+  type,
+  setShowModal,
+}) {
   if (!initialValues) return <p>Loading...</p>;
   return (
     <Form
@@ -72,7 +78,7 @@ export default function PetForm({ initialValues, onSubmit, type }) {
               <option value="sold">sold</option>
             </Field>
           </FormFieldDiv>
-          <SubmitButton
+          <PrimaryButton
             disabled={
               submitting ||
               (!submitSucceeded && !submitFailed && pristine) ||
@@ -81,7 +87,15 @@ export default function PetForm({ initialValues, onSubmit, type }) {
             type="submit"
           >
             {type}
-          </SubmitButton>
+          </PrimaryButton>
+          <SecondaryButton
+            type="button"
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            cancel
+          </SecondaryButton>
           {submitError && <div style={{ color: "darkred" }}>{submitError}</div>}
           {submitSucceeded && (
             <div style={{ color: "green" }}>Operation successful!</div>

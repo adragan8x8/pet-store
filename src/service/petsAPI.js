@@ -17,6 +17,15 @@ export const getPets = async (offset, pageSize) => {
 
   const pets = await Promise.all(fetches);
 
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: pets.slice(-pageSize),
+        hasMoreContent: offset + pageSize < 100,
+      });
+    }, 2000);
+  });
+
   return {
     data: pets.slice(-pageSize),
     hasMoreContent: offset + pageSize < 100,
