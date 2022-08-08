@@ -13,6 +13,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import petsReducer from "./reducers/petsSlice";
 import { Provider } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DeletePet from "./components/DeletePet";
 
 const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ root.render(
         <Route exact path="pets" element={<Pets />} />
         <Route path="pets/:petID" element={<UpdatePet />} />
         <Route path="pets/add" element={<AddPet />} />
+        <Route path="pets/delete/:petID" element={<DeletePet />} />
       </Routes>
     </Provider>
   </BrowserRouter>

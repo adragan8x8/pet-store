@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-export const SubmitButton = styled.button`
+export const SubmitButtonSecondary = styled.button`
   font-size: 14px;
   font-weight: bold;
-  background-color: #333;
-  color: #fff;
-  padding: 10px 16px;
+  background-color: #fff;
+  color: #333;
+  padding: 8px 16px;
   text-align: center;
-  border: none;
+  border: 2px solid #333;
   border-radius: 8px;
   margin: 16px 8px;
   cursor: pointer;

@@ -40,3 +40,9 @@ export const addPet = async (data) => {
   });
   return await response.json();
 };
+
+export const deletePet = async (index) => {
+  return await fetch(`https://petstore.swagger.io/v2/pet/${index}`, {
+    method: "DELETE",
+  });
+};

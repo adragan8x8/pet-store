@@ -14,6 +14,10 @@ export const usePaginated = (getFunction, pageSize) => {
   };
 
   useEffect(() => {
+    setOffset(0);
+  }, [getFunction]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const { data, hasMoreContent } = await getFunction(offset, pageSize);
       setHasMoreContent(hasMoreContent);
