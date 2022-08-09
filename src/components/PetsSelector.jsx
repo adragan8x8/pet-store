@@ -1,73 +1,96 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getPet, getPets } from "../service/petsAPI";
 import Select from "react-select";
+import { SelectorWrapper } from "../styled/SelectorWrapper.styled";
 
 export default function PetsSelector() {
-  const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectorPets, setSelectorPets] = useState([]);
+
   const [petID, setPetID] = useState(null);
   const [petName, setPetName] = useState(null);
-  const [petCategory, setPetCategory] = useState(null);
+  const [petStatus, setPetStatus] = useState(null);
 
   useEffect(() => {
+    if (!petID) return;
     const getPetInfo = async () => {
       const petInfo = await getPet(petID);
       setPetName(petInfo.name ? petInfo.name : "No name");
-      setPetCategory(
-        petInfo.category && petInfo.category.name
-          ? petInfo.category.name
-          : "No category"
-      );
+      setPetStatus(petInfo.status);
     };
     getPetInfo();
   }, [petID]);
 
-  const loadPets = async () => {
+  const loadPets = useCallback(async () => {
     setLoading(true);
-    const pets = await getPets(offset, 10);
+    const pets = await getPets(page, 10);
     const newPets = pets.data.map((item, index) => ({
-      value: item.id ? item.id : index,
-      label: item.name ? item.name : "no name",
+      value: item.id,
+      label: item.name ? `${item.name}  ${item.id}` : "no name",
     }));
     setSelectorPets((oldSelectorPets) => [...oldSelectorPets, ...newPets]);
     setLoading(false);
-  };
+  }, [page]);
 
   useEffect(() => {
-    setOffset((offset) => offset + 10);
     loadPets();
-  }, []);
+  }, [loadPets]);
+
+  const colourStyles = {
+    option: (styles, { isDisabled }) => {
+      return isDisabled
+        ? {
+            ...styles,
+            color: "#808080",
+            backgroundColor: "rgb(242, 242, 242)",
+            margin: "0px",
+            textAlign: "center",
+          }
+        : { ...styles };
+    },
+  };
 
   return (
     <>
       <div style={{ width: "50%", margin: "40px auto" }}>
         <Select
-          options={selectorPets}
+          options={
+            loading
+              ? [
+                  ...selectorPets,
+                  {
+                    value: "loading",
+                    label: "Loading more pets...",
+                    isDisabled: true,
+                  },
+                ]
+              : selectorPets
+          }
           isLoading={loading}
           isSearchable={false}
-          placeholder="Select a pet..."
-          loadingMessage={() => "Loading more pets..."}
-          noOptionsMessage={() => "No more pets..."}
+          placeholder={loading ? "Loading more pets..." : "Select a pet"}
           onMenuScrollToBottom={() => {
-            setOffset((offset) => offset + 10);
+            setPage((page) => page + 1);
             loadPets();
           }}
           onChange={(newValue) => {
             setPetID(newValue.value);
           }}
+          styles={colourStyles}
         />
       </div>
-      <div style={{ width: "100%", textAlign: "center" }}>
+      <SelectorWrapper>
         {petID ? (
           <div>
+            <h3>ID: {petID}</h3>
             <h3>Name: {petName}</h3>
-            <h3>Category: {petCategory}</h3>
+            <h3>Status: {petStatus}</h3>
           </div>
         ) : (
           <h3>No pet selected!</h3>
         )}
-      </div>
+      </SelectorWrapper>
     </>
   );
 }

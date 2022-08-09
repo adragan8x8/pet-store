@@ -1,37 +1,18 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import PetForm from "./PetForm";
 import { FORM_ERROR } from "final-form";
 import { addPet } from "../service/petsAPI";
 import { useNavigate } from "react-router-dom";
-import Modal from "./Modal";
-import { PrimaryButton } from "../styled/PrimaryButton.styled";
-import { SecondaryButton } from "../styled/SecondaryButton.styled";
+import Prompt from "./Prompt";
 
 export default function AddPet() {
-  const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    window.history.pushState(null, document.title, window.location.pathname);
-    window.addEventListener("popstate", () => setShowModal(true));
-    return () =>
-      window.removeEventListener("popstate", () => setShowModal(true));
-  }, []);
+  const [formChanged, setFormChanged] = useState(false);
 
   const initialValues = useMemo(
     () => ({
       id: 0,
-      category: {
-        id: 0,
-        name: "",
-      },
       name: "",
       photoUrls: ["string"],
-      tags: [
-        {
-          id: 0,
-          name: "string",
-        },
-      ],
       status: "available",
     }),
     []
@@ -44,10 +25,6 @@ export default function AddPet() {
       ...initialValues,
       name: values.name,
       status: values.status,
-      category: {
-        ...initialValues.category,
-        name: values.category,
-      },
     };
 
     const callAddPet = async () => {
@@ -64,32 +41,18 @@ export default function AddPet() {
 
   return (
     <>
-      {showModal && (
-        <Modal setShowModal={setShowModal}>
-          <h1>Are you sure?</h1>
-          <p>If you go back now, this pet won't be added!</p>
-          <PrimaryButton onClick={() => navigate("/pets")}>
-            Yes! Take me back!
-          </PrimaryButton>
-          <SecondaryButton
-            onClick={() => {
-              setShowModal(false);
-              window.history.pushState(
-                null,
-                document.title,
-                window.location.pathname
-              );
-            }}
-          >
-            No! I will stay!
-          </SecondaryButton>
-        </Modal>
-      )}
+      <Prompt
+        title="Are you sure?"
+        subtitle="If you leave the page, every change made will be lost!"
+        primaryButtonMessage="Yes! Leave the page!"
+        secondaryButtonMessage="No! Stay on page!"
+        when={formChanged}
+      />
       <PetForm
         initialValues={initialValues}
         onSubmit={onAddSubmit}
-        type="add"
-        setShowModal={setShowModal}
+        type="update"
+        setFormChanged={setFormChanged}
       ></PetForm>
     </>
   );

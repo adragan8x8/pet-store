@@ -1,32 +1,29 @@
 import React from "react";
-import { Field, Form } from "react-final-form";
+import { Field, Form, FormSpy } from "react-final-form";
 import { FormFieldDiv } from "../styled/FormFieldDiv.styled";
 import { PrimaryButton } from "../styled/PrimaryButton.styled";
 import FormInput from "./FormInput";
 import { SecondaryButton } from "../styled/SecondaryButton.styled";
+import { useNavigate } from "react-router-dom";
 
 export default function PetForm({
   initialValues,
   onSubmit,
   type,
-  setShowModal,
+  setFormChanged,
 }) {
+  const navigate = useNavigate();
   if (!initialValues) return <p>Loading...</p>;
   return (
     <Form
       onSubmit={onSubmit}
       initialValues={{
         name: initialValues.name ? initialValues.name : "",
-        category:
-          initialValues.category && initialValues.category.name
-            ? initialValues.category.name
-            : "",
         status: initialValues.status ? initialValues.status : "",
       }}
       validate={(values) => {
         const errors = {};
         if (!values.name) errors.name = "Required!";
-        if (!values.category) errors.category = "Required!";
         return errors;
       }}
       render={({
@@ -59,17 +56,6 @@ export default function PetForm({
             )}
           </Field>
 
-          <Field name="category">
-            {({ input, meta }) => (
-              <FormInput
-                input={input}
-                meta={meta}
-                field="category"
-                placeholder="dog"
-              />
-            )}
-          </Field>
-
           <FormFieldDiv>
             <label>status</label>
             <Field name="status" component="select">
@@ -78,6 +64,20 @@ export default function PetForm({
               <option value="sold">sold</option>
             </Field>
           </FormFieldDiv>
+
+          <FormSpy
+            onChange={(props) => {
+              setFormChanged(
+                !(
+                  (!props.submitSucceeded &&
+                    !props.submitFailed &&
+                    props.pristine) ||
+                  (props.submitSucceeded && !props.modifiedSinceLastSubmit)
+                )
+              );
+            }}
+          />
+
           <PrimaryButton
             disabled={
               submitting ||
@@ -91,7 +91,7 @@ export default function PetForm({
           <SecondaryButton
             type="button"
             onClick={() => {
-              setShowModal(true);
+              navigate(-1);
             }}
           >
             cancel
