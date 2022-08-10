@@ -10,11 +10,12 @@ import { add } from "../reducers/petsSlice";
 import { usePaginated } from "../customHooks/usePaginated";
 import { PaginateButtons } from "../styled/PaginateButtons.styled";
 import { PaginateButton } from "../styled/PaginateButton.styled";
-import { Selector } from "../styled/Selector.styled";
 import { useEffect, useRef, useState } from "react";
 
 import TableEdit from "./TableEdit";
 import DeletePet from "./DeletePet";
+import { TableFilter } from "../styled/TableFilter.styled";
+import { FilterOption } from "../styled/FilterOption.styled";
 
 export default function Pets() {
   const [showModal, setShowModal] = useState(false);
@@ -24,10 +25,8 @@ export default function Pets() {
   const pets = useSelector((state) => state.pets);
   const petGetter = useRef(getPets);
 
-  const { next, prev, hasMoreContent, data, offset, setOffset } = usePaginated(
-    petGetter.current,
-    pageSize
-  );
+  const { next, prev, hasMoreContent, data, page, setPage, numberOfPages } =
+    usePaginated(petGetter.current, pageSize);
 
   useEffect(() => {
     dispatch(add(data));
@@ -48,23 +47,53 @@ export default function Pets() {
             }}
           />
         )}
-        <Selector
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(parseInt(e.target.value));
-            setOffset(0);
-          }}
-          name="page-size"
-        >
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-        </Selector>
+        <TableFilter>
+          <FilterOption>
+            <h3>Page size:</h3>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(parseInt(e.target.value));
+                setPage(0);
+              }}
+              name="page-size"
+            >
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </FilterOption>
+
+          <FilterOption>
+            <h3>Page number:</h3>
+            <select
+              value={page}
+              onChange={(e) => {
+                setPage(parseInt(e.target.value));
+              }}
+              name="page-size"
+            >
+              {Array.apply(null, Array(Math.max(0, numberOfPages))).map(
+                (item, index) => {
+                  return (
+                    <option key={index} value={index}>
+                      {index + 1}
+                    </option>
+                  );
+                }
+              )}
+            </select>
+          </FilterOption>
+
+          <h3>
+            {page + 1} / {numberOfPages}
+          </h3>
+        </TableFilter>
+
         <PetsTable>
           <thead>
             <TableRow>
               <TableHeader>ID</TableHeader>
-              <TableHeader>Category</TableHeader>
               <TableHeader>Name</TableHeader>
               <TableHeader>Status</TableHeader>
               <TableHeader>Edit</TableHeader>
@@ -75,16 +104,13 @@ export default function Pets() {
             {pets.map((pet, index) => {
               return (
                 <TableRow highlighted={index % 2} key={index}>
-                  <TableData>{pet.id ? pet.id : offset + index}</TableData>
-                  <TableData>
-                    {pet.category ? pet.category.name : "No category"}
-                  </TableData>
+                  <TableData>{pet.id}</TableData>
                   <TableData>{pet.name ? pet.name : "No name"}</TableData>
                   <TableData>{pet.status}</TableData>
                   <TableData>
                     <TableEdit
                       icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSAyMWgtNXYtMmg1djJ6bTMuNDI0LTUuNzE4bDQuNDAyIDQuMzk5LTUuODI2IDEuMzE5IDEuNDI0LTUuNzE4em0xNS41NzYtNi43NDhsLTkuNjg5IDkuODA0LTQuNTM2LTQuNTM2IDkuNjg5LTkuODAyIDQuNTM2IDQuNTM0eiIvPjwvc3ZnPg=="
-                      link={`/pets/${pet.id ? pet.id : offset + index}`}
+                      link={`/pets/${pet.id}`}
                     />
                   </TableData>
                   <TableData>
@@ -93,7 +119,7 @@ export default function Pets() {
                       src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMjAgMjBoLTE1LjI1Yy0uNDE0IDAtLjc1LjMzNi0uNzUuNzVzLjMzNi43NS43NS43NWgxNS43NWMuNTMgMCAxLS40NyAxLTF2LTE1Ljc1YzAtLjQxNC0uMzM2LS43NS0uNzUtLjc1cy0uNzUuMzM2LS43NS43NXptLTEtMTdjMC0uNDc4LS4zNzktMS0xLTFoLTE1Yy0uNjIgMC0xIC41MTktMSAxdjE1YzAgLjYyMS41MiAxIDEgMWgxNWMuNDc4IDAgMS0uMzc5IDEtMXptLTguNTAzIDYuNDM3IDIuMjE5LTIuMjJjLjE0Ni0uMTQ2LjMzOC0uMjE5LjUzLS4yMTkuNDA0IDAgLjc1MS4zMjUuNzUxLjc1IDAgLjE5My0uMDczLjM4NC0uMjE5LjUzMWwtMi4yMiAyLjIyIDIuMjIyIDIuMjIyYy4xNDcuMTQ3LjIyLjMzOS4yMi41MyAwIC40MjctLjM0OS43NTEtLjc1Ljc1MS0uMTkyIDAtLjM4NS0uMDczLS41MzEtLjIxOWwtMi4yMjItMi4yMjMtMi4yMjMgMi4yMjNjLS4xNDYuMTQ2LS4zMzguMjE5LS41My4yMTktLjQwMSAwLS43NTEtLjMyNC0uNzUxLS43NTEgMC0uMTkxLjA3My0uMzgzLjIyLS41M2wyLjIyMi0yLjIyMi0yLjIxOS0yLjIyYy0uMTQ2LS4xNDctLjIxOS0uMzM4LS4yMTktLjUzMSAwLS40MjUuMzQ2LS43NS43NS0uNzUuMTkyIDAgLjM4NC4wNzMuNTMuMjE5eiIgZmlsbC1ydWxlPSJub256ZXJvIi8+PC9zdmc+"
                       onClick={() => {
                         setShowModal(true);
-                        setPetIndex(pet.id ? pet.id : offset + index);
+                        setPetIndex(pet.id);
                       }}
                       alt="delete"
                     />
@@ -104,7 +130,7 @@ export default function Pets() {
           </tbody>
         </PetsTable>
         <PaginateButtons>
-          <PaginateButton disabled={offset === 0} onClick={prev}>
+          <PaginateButton disabled={page === 0} onClick={prev}>
             <svg
               width={"40px"}
               clipRule="evenodd"

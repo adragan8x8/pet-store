@@ -1,30 +1,20 @@
 export const getPet = async (index) => {
-  const response = await fetch(`https://petstore.swagger.io/v2/pet/${index}`);
+  const response = await fetch(`/api/v1/pets/${index}`);
   return response.json();
 };
 
-export const getPets = async (offset, pageSize) => {
-  const fetches = [];
-
-  const singleFetch = async (index) => {
-    const response = await fetch(`https://petstore.swagger.io/v2/pet/${index}`);
-    return response.json();
-  };
-
-  for (let i = 0; i < offset + pageSize; i++) {
-    fetches.push(singleFetch(i));
-  }
-
-  const pets = await Promise.all(fetches);
-
+export const getPets = async (page, pageSize) => {
+  const response = await fetch(`/api/v1/pets?page=${page}&size=${pageSize}`);
+  const data = await response.json();
   return {
-    data: pets.slice(-pageSize),
-    hasMoreContent: offset + pageSize < 100,
+    data: data._embedded.petList,
+    hasMoreContent: data.page.number !== data.page.totalPages - 1,
+    numberOfPages: data.page.totalPages,
   };
 };
 
 export const updatePet = async (data) => {
-  const response = await fetch("https://petstore.swagger.io/v2/pet", {
+  const response = await fetch(`/api/v1/pets/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -33,7 +23,7 @@ export const updatePet = async (data) => {
 };
 
 export const addPet = async (data) => {
-  const response = await fetch("https://petstore.swagger.io/v2/pet", {
+  const response = await fetch("/api/v1/pets/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -42,7 +32,7 @@ export const addPet = async (data) => {
 };
 
 export const deletePet = async (index) => {
-  return await fetch(`https://petstore.swagger.io/v2/pet/${index}`, {
+  return await fetch(`/api/v1/pets//${index}`, {
     method: "DELETE",
   });
 };

@@ -1,25 +1,18 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import PetForm from "./PetForm";
 import { FORM_ERROR } from "final-form";
 import { addPet } from "../service/petsAPI";
 import { useNavigate } from "react-router-dom";
+import Prompt from "./Prompt";
 
-export default function EditPet() {
+export default function AddPet() {
+  const [formChanged, setFormChanged] = useState(false);
+
   const initialValues = useMemo(
     () => ({
       id: 0,
-      category: {
-        id: 0,
-        name: "",
-      },
       name: "",
       photoUrls: ["string"],
-      tags: [
-        {
-          id: 0,
-          name: "string",
-        },
-      ],
       status: "available",
     }),
     []
@@ -32,10 +25,6 @@ export default function EditPet() {
       ...initialValues,
       name: values.name,
       status: values.status,
-      category: {
-        ...initialValues.category,
-        name: values.category,
-      },
     };
 
     const callAddPet = async () => {
@@ -51,10 +40,20 @@ export default function EditPet() {
   }
 
   return (
-    <PetForm
-      initialValues={initialValues}
-      onSubmit={onAddSubmit}
-      type="add"
-    ></PetForm>
+    <>
+      <Prompt
+        title="Are you sure?"
+        subtitle="If you leave the page, every change made will be lost!"
+        primaryButtonMessage="Yes! Leave the page!"
+        secondaryButtonMessage="No! Stay on page!"
+        when={formChanged}
+      />
+      <PetForm
+        initialValues={initialValues}
+        onSubmit={onAddSubmit}
+        type="update"
+        setFormChanged={setFormChanged}
+      ></PetForm>
+    </>
   );
 }

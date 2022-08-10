@@ -14,7 +14,10 @@ export default function Navbar() {
         <NavItem>Pets</NavItem>
       </Link>
       <Link to="/pets/add">
-        <NavItem>Add</NavItem>
+        <NavItem>Add pet</NavItem>
+      </Link>
+      <Link to="/pets/selector">
+        <NavItem>Select pet</NavItem>
       </Link>
     </NavContainer>
   );
