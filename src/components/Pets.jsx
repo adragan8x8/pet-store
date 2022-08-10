@@ -10,11 +10,12 @@ import { add } from "../reducers/petsSlice";
 import { usePaginated } from "../customHooks/usePaginated";
 import { PaginateButtons } from "../styled/PaginateButtons.styled";
 import { PaginateButton } from "../styled/PaginateButton.styled";
-import { Selector } from "../styled/Selector.styled";
 import { useEffect, useRef, useState } from "react";
 
 import TableEdit from "./TableEdit";
 import DeletePet from "./DeletePet";
+import { TableFilter } from "../styled/TableFilter.styled";
+import { FilterOption } from "../styled/FilterOption.styled";
 
 export default function Pets() {
   const [showModal, setShowModal] = useState(false);
@@ -24,10 +25,8 @@ export default function Pets() {
   const pets = useSelector((state) => state.pets);
   const petGetter = useRef(getPets);
 
-  const { next, prev, hasMoreContent, data, page, setPage } = usePaginated(
-    petGetter.current,
-    pageSize
-  );
+  const { next, prev, hasMoreContent, data, page, setPage, numberOfPages } =
+    usePaginated(petGetter.current, pageSize);
 
   useEffect(() => {
     dispatch(add(data));
@@ -48,18 +47,45 @@ export default function Pets() {
             }}
           />
         )}
-        <Selector
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(parseInt(e.target.value));
-            setPage(0);
-          }}
-          name="page-size"
-        >
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-        </Selector>
+        <TableFilter>
+          <FilterOption>
+            <h3>Page size:</h3>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(parseInt(e.target.value));
+                setPage(0);
+              }}
+              name="page-size"
+            >
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </FilterOption>
+
+          <FilterOption>
+            <h3>Page number:</h3>
+            <select
+              value={page}
+              onChange={(e) => {
+                setPage(parseInt(e.target.value));
+              }}
+              name="page-size"
+            >
+              {Array.apply(null, Array(Math.max(0, numberOfPages))).map(
+                (item, index) => {
+                  return <option value={index}>{index + 1}</option>;
+                }
+              )}
+            </select>
+          </FilterOption>
+
+          <h3>
+            {page + 1} / {numberOfPages}
+          </h3>
+        </TableFilter>
+
         <PetsTable>
           <thead>
             <TableRow>

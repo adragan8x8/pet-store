@@ -8,7 +8,8 @@ export const getPets = async (page, pageSize) => {
   const data = await response.json();
   return {
     data: data._embedded.petList,
-    hasMoreContent: data.page.number !== data.page.totalPages,
+    hasMoreContent: data.page.number !== data.page.totalPages - 2,
+    numberOfPages: data.page.totalPages - 1,
   };
 };
 
