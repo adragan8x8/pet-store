@@ -75,7 +75,11 @@ export default function Pets() {
             >
               {Array.apply(null, Array(Math.max(0, numberOfPages))).map(
                 (item, index) => {
-                  return <option value={index}>{index + 1}</option>;
+                  return (
+                    <option key={index} value={index}>
+                      {index + 1}
+                    </option>
+                  );
                 }
               )}
             </select>
